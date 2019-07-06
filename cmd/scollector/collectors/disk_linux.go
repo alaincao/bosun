@@ -122,9 +122,15 @@ func c_iostat_linux() (opentsdb.MultiDataPoint, error) {
 				metric += "rem."
 			}
 		}
-		if len(values) == 14 {
+		if len(values) == 14 ||
+// ACA: Hack for v4.18+ kernels
+// cf. https://www.kernel.org/doc/Documentation/ABI/testing/procfs-diskstats
+len(values) == 18 {
 			var read_sectors, msec_read, write_sectors, msec_write float64
 			for i, v := range values[3:] {
+if i >= 11 {
+	continue;
+}
 				switch diskLinuxFields[i].key {
 				case "read_sectors":
 					read_sectors, _ = strconv.ParseFloat(v, 64)
