@@ -125,7 +125,9 @@ func c_iostat_linux() (opentsdb.MultiDataPoint, error) {
 		if len(values) == 14 ||
 // ACA: Hack for v4.18+ kernels
 // cf. https://www.kernel.org/doc/Documentation/ABI/testing/procfs-diskstats
-len(values) == 18 {
+len(values) == 18 ||
+// ACA: Hack for v5.5+ kernels
+len(values) == 20 {
 			var read_sectors, msec_read, write_sectors, msec_write float64
 			for i, v := range values[3:] {
 if i >= 11 {
