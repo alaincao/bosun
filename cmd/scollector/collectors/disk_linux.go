@@ -253,7 +253,10 @@ func c_dfstat_blocks_linux() (opentsdb.MultiDataPoint, error) {
 			Add(&md, osDiskPctFree, sf/st*100, os_tags, metadata.Gauge, metadata.Pct, osDiskPctFreeDesc)
 		}
 		return nil
-	}, "df", "-lPT", "--block-size", "1")
+	}, "df", "-lPT", "--block-size", "1",
+// ACA: Hack for Debian Bullseye
+// cf. https://github.com/flatpak/xdg-desktop-portal/issues/553
+"--exclude-type=fuse.portal")
 	return md, err
 }
 
