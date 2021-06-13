@@ -108,7 +108,10 @@ func c_iostat_linux() (opentsdb.MultiDataPoint, error) {
 		var block_size int64
 		device := values[2]
 		ts := opentsdb.TagSet{"dev": device}
-		if i1%16 == 0 && i0 > 1 {
+		if (i1%16 == 0 && i0 > 1) ||
+// ACA: Hack for NVME drives
+// cf. https://github.com/bosun-monitor/bosun/issues/2223
+( (len(device) == len("nvmeXnX") && strings.HasPrefix(device, "nvme")) ) {
 			metric = "linux.disk."
 			if b, err := ioutil.ReadFile("/sys/block/" + device + "/queue/hw_sector_size"); err == nil {
 				block_size, _ = strconv.ParseInt(strings.TrimSpace(string(b)), 10, 64)
